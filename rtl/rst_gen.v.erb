@@ -1,0 +1,18 @@
+% load "parameters.rb"
+
+module rst_gen(/*AUTOARG*/);
+`include "parameters.vh"
+
+  /*AUTOINPUT*/
+  input rst;
+
+  /*AUTOOUTPUT*/
+  output xrst;
+
+  /*AUTOWIRE*/
+
+  /*AUTOREG*/
+
+  assign xrst = ~rst;
+
+endmodule

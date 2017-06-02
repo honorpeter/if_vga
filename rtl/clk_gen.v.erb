@@ -1,0 +1,45 @@
+% load "parameters.rb"
+
+module clk_gen(/*AUTOARG*/);
+`include "parameters.vh"
+
+  parameter IN_FREQ  = 125;
+  parameter OUT_FREQ = 25;
+  parameter SW_RATE  = IN_FREQ / OUT_FREQ;
+  parameter COUNT = clogb2(SW_RATE-1);
+
+  /*AUTOINPUT*/
+  input clk;
+  input xrst;
+
+  /*AUTOOUTPUT*/
+  output pixel_clk;
+
+  /*AUTOWIRE*/
+
+  /*AUTOREG*/
+  reg [COUNT-1:0] r_pos_count;
+  reg [COUNT-1:0] r_neg_count;
+
+  assign pixel_clk = r_pos_count + r_neg_count <= SW_RATE-2 ? 1'b1
+                   : SW_RATE-2 < r_pos_count + r_neg_count  ? 1'b0
+                   : 1'b0;
+
+  // Divide double clock rate by 5
+  always @(posedge clk or negedge xrst)
+    if (!xrst)
+      r_pos_count <= 0;
+    else if (r_pos_count == SW_RATE-1)
+      r_pos_count <= 0;
+    else
+      r_pos_count <= r_pos_count + 1;
+
+  always @(negedge clk or negedge xrst)
+    if (!xrst)
+      r_neg_count <= 0;
+    else if (r_neg_count == SW_RATE-1)
+      r_neg_count <= 0;
+    else
+      r_neg_count <= r_neg_count + 1;
+
+endmodule

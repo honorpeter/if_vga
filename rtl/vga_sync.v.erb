@@ -1,0 +1,67 @@
+% load "parameters.rb"
+
+`timescale 1 ns / 1 ps
+
+module vga_sync(/*AUTOARG*/);
+`include "parameters.vh"
+
+  /*AUTOINPUT*/
+  input pixel_clk;
+  input xrst;
+
+  /*AUTOOUTPUT*/
+  output [10-1:0] pixel_x;
+  output [10-1:0] pixel_y;
+  output          hsync;
+  output          vsync;
+
+  /*AUTOWIRE*/
+
+  /*AUTOREG*/
+  reg [10-1:0] r_hcount;
+  reg [10-1:0] r_vcount;
+  reg          r_hsync;
+  reg          r_vsync;
+
+
+  assign pixel_x = r_hcount < HVIDEO ? r_hcount : 10'b1111111111;
+  assign pixel_y = r_vcount < VVIDEO ? r_vcount : 10'b1111111111;
+
+  assign hsync = r_hsync;
+  assign vsync = r_vsync;
+
+
+  always @(posedge pixel_clk)
+    if (!xrst)
+      r_hcount <= 0;
+    else if (r_hcount == HMAX-1)
+      r_hcount <= 0;
+    else
+      r_hcount <= r_hcount + 1;
+
+  always @(posedge pixel_clk)
+    if (!xrst)
+      r_vcount <= 0;
+    else if (r_vcount == VMAX-1)
+      r_vcount <= 0;
+    else
+      r_vcount <= r_vcount + 1;
+
+  always @(posedge pixel_clk)
+    if (!xrst)
+      r_hsync <= 0;
+    else if (r_hcount <= HVIDEO+HFPORCH || HVIDEO+HFPORCH+HSYNCL <= r_hcount)
+      r_hsync <= 1;
+    else
+      r_hsync <= 0;
+
+  always @(posedge pixel_clk)
+    if (!xrst)
+      r_vsync <= 0;
+    else if (r_vcount <= VVIDEO+VFPORCH || VVIDEO+VFPORCH+VSYNCL <= r_vcount)
+      r_vsync <= 1;
+    else
+      r_vsync <= 0;
+
+endmodule
+

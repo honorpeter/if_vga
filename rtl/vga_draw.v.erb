@@ -1,0 +1,22 @@
+% load "parameters.rb"
+
+module vga_draw(/*AUTOARG*/);
+`include "parameters.vh"
+
+  /*AUTOINPUT*/
+  input [10-1:0] pixel_x;
+  input [10-1:0] pixel_y;
+
+  /*AUTOOUTPUT*/
+  output [16-1:0] pixel_rgb;
+
+  /*AUTOWIRE*/
+
+  /*AUTOREG*/
+
+  assign pixel_rgb = pixel_x & pixel_y
+                   ? {5'b00111, 6'b000111, 5'b00111}
+                   : {5'b11111, 6'b111111, 5'b11111};
+
+endmodule
+

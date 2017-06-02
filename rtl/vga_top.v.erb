@@ -1,0 +1,28 @@
+% load "parameters.rb"
+
+module vga_top(/*AUTOARG*/);
+`include "parameters.vh"
+
+  /*AUTOINPUT*/
+  (* mark_debug = "true" *) input clk;
+  (* mark_debug = "true" *) input rst;
+
+  /*AUTOOUTPUT*/
+  (* mark_debug = "true" *) output          hsync;
+  (* mark_debug = "true" *) output          vsync;
+  (* mark_debug = "true" *) output [16-1:0] pixel_rgb;
+
+  /*AUTOWIRE*/
+
+  /*AUTOREG*/
+
+  clk_gen clk_gen0(/*AUTOINST*/);
+
+  rst_gen rst_gen0(/*AUTOINST*/);
+
+  vga_sync sync0(/*AUTOINST*/);
+
+  vga_draw draw0(/*AUTOINST*/);
+
+endmodule
+
